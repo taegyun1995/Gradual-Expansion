@@ -1,0 +1,48 @@
+# Gradle
+.gradle/
+build/
+
+# IDE
+.idea/
+*.iml
+*.ipr
+*.iws
+.vscode/
+*.swp
+*.swo
+.project
+.classpath
+.settings/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Java
+*.class
+*.jar
+!gradle/wrapper/gradle-wrapper.jar
+*.war
+*.ear
+hs_err_pid*
+
+# Application
+*.log
+*.hprof
+application-local.yml
+.env
+
+# Docker
+docker-compose.override.yml
+
+# Claude Code
+.claude/
+
+# k6
+k6/results/
+
+# Plan (개인 작업용)
+plan.md
+
+# Docs (개인 작업용)
+docs/

@@ -1,0 +1,95 @@
+# CodeRabbit 설정 — AI 코드 리뷰 자동화
+# Public 리포지토리는 무료로 전체 기능 사용 가능
+
+# 리뷰 언어: 한국어
+language: "ko-KR"
+
+# 리뷰 톤 설정
+tone_instructions: "Spring Boot 이커머스 프로젝트입니다. 성능, 보안, 확장성 관점에서 건설적인 피드백을 주세요."
+
+reviews:
+  # chill: 핵심만 짚어줌, assertive: 사소한 것까지 꼼꼼히
+  profile: "assertive"
+
+  # PR 요약 자동 생성
+  high_level_summary: true
+
+  # 리뷰 코멘트 해결 시 자동 approve
+  request_changes_workflow: true
+
+  # 자동 리뷰 설정
+  auto_review:
+    enabled: true
+    # 증분 리뷰 (push마다 변경분만 리뷰)
+    auto_incremental_review: true
+    # draft PR은 리뷰 건너뜀
+    drafts: false
+    # 이 키워드가 제목에 있으면 리뷰 건너뜀
+    ignore_title_keywords:
+      - "wip"
+      - "draft"
+      - "DO NOT MERGE"
+
+  # 경로별 리뷰 지침
+  path_instructions:
+    - path: "app/src/main/java/**/domain/**/*.java"
+      instructions: |
+        도메인 엔티티 리뷰:
+        - 팩토리 메서드(of()) 패턴 사용 여부
+        - 비즈니스 로직이 엔티티 안에 있는지 (빈약한 도메인 모델 방지)
+        - BaseTimeEntity 상속 여부
+        - @NoArgsConstructor(access = PROTECTED) 사용 여부
+
+    - path: "app/src/main/java/**/application/**/*.java"
+      instructions: |
+        서비스 레이어 리뷰:
+        - @Transactional 설정 (readOnly 구분)
+        - 비즈니스 로직이 서비스에 과도하게 몰려있지 않은지
+        - 도메인 예외(BusinessException 계열) 사용 여부
+
+    - path: "app/src/main/java/**/infrastructure/web/**/*.java"
+      instructions: |
+        컨트롤러 리뷰:
+        - ApiResponse<T> 래핑 여부
+        - @Valid 검증 누락 여부
+        - @ResponseStatus 미사용 (모든 성공은 200)
+
+    - path: "app/src/main/java/**/infrastructure/persistence/**/*.java"
+      instructions: |
+        QueryDSL Repository 리뷰:
+        - Projections.constructor()로 DTO 직접 반환하는지
+        - N+1 쿼리 가능성
+        - 페이징 처리 (count 쿼리 분리)
+
+    - path: "app/src/test/java/**/*.java"
+      instructions: |
+        테스트 코드 리뷰:
+        - given/when/then 구조
+        - @DisplayName 한글 작성 여부
+        - 서비스는 Mockito 단위 테스트, Repository는 @DataJpaTest
+        - 경계값, 예외 케이스 커버리지
+
+    - path: "app/src/main/resources/**/*.yml"
+      instructions: |
+        설정 파일 리뷰:
+        - 민감 정보(비밀번호 등) 하드코딩 여부
+        - 환경별 프로필 분리
+        - 주석으로 설정 이유 설명 여부
+
+    - path: "docker-compose*.yml"
+      instructions: |
+        Docker 설정 리뷰:
+        - 리소스 제한 설정 여부 (CPU, 메모리)
+        - 헬스체크 설정
+        - 볼륨 마운트 적절성
+
+  # 마무리 터치
+  finishing_touches:
+    docstrings:
+      enabled: true
+    unit_tests:
+      enabled: true
+
+# 채팅 설정 (PR 코멘트로 @coderabbitai 대화)
+chat:
+  auto_reply: true
